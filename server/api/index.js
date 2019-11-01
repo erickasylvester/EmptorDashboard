@@ -1,6 +1,6 @@
 const router = require('express').Router()
 
-router.use('/testData', require('./testData'))
+router.use('/display_data', require('./displayData'))
 
 router.use((req, res, next) => {
   const error = new Error('Route Not Found')
