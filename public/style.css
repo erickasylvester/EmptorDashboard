@@ -1,0 +1,106 @@
+body {
+  font-family: sans-serif;
+}
+
+.page-title {
+  color: white;
+}
+
+nav a {
+  display: inline-block;
+  margin: 1em;
+}
+
+#google-icon {
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 10px;
+}
+
+.all-products {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.item-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  margin: 3px;
+  height: 250px;
+  width: 300px;
+}
+
+.single-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 3px;
+}
+
+.cart-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  margin: 3px;
+}
+
+.cart-subcontainer-left {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.cart-subcontainer-right {
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.nav-bar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  height: 125px;
+  background-color: teal;
+  margin: 0;
+  color: white;
+}
+
+.navbar-right {
+  display: flex;
+  flex-grow: 1;
+}
+.navbar-left {
+  display: flex;
+  flex-grow: 1;
+  align-items: flex-start;
+  flex-direction: column;
+  color: white;
+}
+
+.submit-button {
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
