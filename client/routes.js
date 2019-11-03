@@ -8,7 +8,7 @@ import DataDisplay from './components/dataDisplay'
 export default function Routes(){
   return (
     <Switch>
-      <Route exact path="/*" component={DataDisplay} />
+      {/* <Route exact path="/*" component={DataDisplay} /> */}
     </Switch>
   )
 }
