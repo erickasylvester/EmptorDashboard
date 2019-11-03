@@ -16,7 +16,7 @@ const GOT_PATENT = 'GOT_PATENT'
  * INITIAL STATE
  */
 const initialState = {
-  population: [],
+  population: {},
   GPD : [],
   emissions : [],
   lifeExpectancy : [],
@@ -41,8 +41,19 @@ const gotPatent = (resident, data) => ({type: GOT_PATENT, resident, data})
  */
 export const getPopulation = () => async dispatch => {
   try {
-    const res = await axios.get('/display_data/population')
-    dispatch(gotPopulation(res.data))
+    console.log("Getting population")
+    const res = await axios.get('/api/display_data/population')
+    let newData = res.data;
+    console.log("Retrived data", res.data)
+    let population = {};
+    for (let i = 0; i < newData.length; i++){
+      if(!population[newData[i].country.code]){
+        population[newData[i].country.code] = {};
+      }
+      population[newData[i].country.code][""+newData[i].year] = newData[i].total;
+    }
+    console.log("New Population Data", population)
+    dispatch(gotPopulation(population))
   } catch (err) {
     console.error(err)
   }

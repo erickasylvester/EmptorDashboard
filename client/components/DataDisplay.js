@@ -1,52 +1,70 @@
 import React from 'react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { DataTable } from './dataTable';
-// import 'react-tabs/style/react-tabs.css';
+import {connect} from 'react-redux'
+import {getPopulation} from '../store/dataStore'
+import 'react-tabs/style/react-tabs.css';
+import Dropdown from 'react-dropdown'
+// import Select from 'react-select'
+import Select from 'react-virtualized-select'
+
+
 /**
  * COMPONENT
  */
-export const DataDisplay = props => {
-
-  const data = [{
-    name: 'Tanner Linsley',
-    age: 26,
-    friend: {
-      name: 'Jason Maurer',
-      age: 23,
+class DataDisplay extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      selectedCountry : "USA"
     }
-  }]
- 
-  const columns = [{
-    Header: 'Name',
-    accessor: 'name' // String-based value accessors!
-  }, {
-    Header: 'Age',
-    accessor: 'age',
-    Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
-  }, {
-    id: 'friendName', // Required because our accessor is not a string
-    Header: 'Friend Name',
-    accessor: d => d.friend.name // Custom value accessors!
-  }, {
-    Header: props => <span>Friend Age</span>, // Custom header components!
-    accessor: 'friend.age'
-  }]
+    this.onSelectCountry = this.onSelectCountry.bind(this)
+  }
+  onSelectCountry(e){
+    this.setState({selectedCountry: e.value})
+  }
+  componentDidMount() {
+    this.props.getPopulation()
+  }
+  render(){
+    console.log("In render", this.props.population[this.state.selectedCountry])
+    let options = [];
+    let countries = Object.keys(this.props.population);
+    countries.forEach(country => {
+      options.push(country)
+    })
+    const defaultOption = options[0]
+    console.log("In render - options", options)
 
-  return (
+    return (
       <div>
-    <Tabs>
-      <TabList>
-        <Tab>Title 1</Tab>
-        <Tab>Title 2</Tab>
-      </TabList>
+        <Dropdown options={options} onChange={this.onSelectCountry} value={defaultOption} placeholder="Select a country" />
+        <Tabs>
+          <TabList>
+            <Tab>Population</Tab>
+            <Tab>Title 2</Tab>
+          </TabList>
 
-      <TabPanel>
-        <DataTable data={data} columns={columns}></DataTable>
-      </TabPanel>
-      <TabPanel>
-        <DataTable data={data} columns={columns}></DataTable>
-      </TabPanel>
-    </Tabs>
-    </div>
-  )
+          <TabPanel>
+            <DataTable data={this.props.population[this.state.selectedCountry]}></DataTable>
+          </TabPanel>
+          <TabPanel>
+            <DataTable data={this.props.population[this.state.selectedCountry]}></DataTable>
+          </TabPanel>
+        </Tabs>
+      </div>
+    )
+  }
 }
+
+const mapStateToProps = state => {
+  return {
+    population: state.data.population
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  getPopulation: () => dispatch(getPopulation())
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(DataDisplay)
