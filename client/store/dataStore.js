@@ -1,5 +1,4 @@
 import axios from 'axios'
-import history from '../history'
 
 /**
  * ACTION TYPES
@@ -10,19 +9,21 @@ const GOT_EMISSIONS = 'GOT_EMISSIONS'
 const GOT_LIFE_EXPECTANCY = 'GOT_LIFE_EXPECTANCY'
 const GOT_TECH_EXPORTS = 'GOT_TECH_EXPORTS'
 const GOT_PATENT = 'GOT_PATENT'
-
+const UPDATE_DATA = "UPDATE_DATA"
+const UPDATE_COUNTRIES = "UPDATE_COUNTRIES"
 
 /**
  * INITIAL STATE
  */
 const initialState = {
   population: {},
-  GPD : {},
+  gdp : {},
   emissions : {},
   lifeExpectancy : {},
   techExports : {},
   patentNonResidents: {},
-  patentResidents : {}
+  patentResidents : {},
+  countries: []
 }
 
 /**
@@ -34,24 +35,58 @@ const gotEmissions = (data) => ({type: GOT_EMISSIONS, data})
 const gotLifeExpectancy = (data) => ({type: GOT_LIFE_EXPECTANCY, data})
 const gotTechExports = (data) => ({type: GOT_TECH_EXPORTS, data})
 const gotPatent = (resident, data) => ({type: GOT_PATENT, resident, data})
+const updateCountries = (countries) => ({type: UPDATE_COUNTRIES, countries})
 
-
+const POPULATION = "population"
 /**
  * THUNK CREATORS
  */
+
+
+export const getCountries = (data) => async dispatch => {
+  try {
+    const res = await axios.get('/api/display_data/countries')
+    dispatch(updateCountries(res.data))
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const updateData = (data) => async dispatch => {
+  console.log("Updating data in store")
+  try {
+    switch(data.category){
+      case POPULATION:
+        {
+          console.log("In pop switch")
+
+          const res = await axios.put('/api/display_data/population', data)
+          let population = restructureData(res.data)
+          dispatch(gotPopulation(population))        
+        }
+        default:
+          {
+          }
+    }
+
+  } catch (err) {
+    console.error(err)
+  }
+}
+const restructureData =(inputData) => {
+  let output = {};
+  for (let i = 0; i < inputData.length; i++){
+    if(!output[inputData[i].country.code]){
+      output[inputData[i].country.code] = {};
+    }
+    output[inputData[i].country.code][inputData[i].year] = inputData[i].total;
+  }
+  return output
+}
 export const getPopulation = () => async dispatch => {
   try {
     const res = await axios.get('/api/display_data/population')
-    let newData = res.data;
-    console.log("Population", res.data)
-
-    let population = {};
-    for (let i = 0; i < newData.length; i++){
-      if(!population[newData[i].country.code]){
-        population[newData[i].country.code] = {};
-      }
-      population[newData[i].country.code][newData[i].year] = newData[i].total;
-    }
+    let population = restructureData(res.data)
     dispatch(gotPopulation(population))
   } catch (err) {
     console.error(err)
@@ -167,6 +202,31 @@ export default function(state = initialState, action) {
       else{
         return {...state, patentNonResidents: action.data} 
       }
+    case UPDATE_DATA:
+      if(action.data.category === "population"){
+        return {...state, population: action.data.population}
+      }
+      else if(action.data.category === "gpd"){
+        return {...state, gdp: action.data.gdp}
+      }
+      else if(action.data.category === "emissions"){
+        return {...state, emissions: action.data.emissions}
+      }
+      else if(action.data.category === "lifeExpectancy"){
+        return {...state, lifeExpectancy: action.data.lifeExpectancy}
+      }
+      else if(action.data.category === "techExports"){
+        return {...state, techExports: action.data.techExports}
+      }
+      else if(action.data.category === "patentResidents"){
+        return {...state, patentResidents: action.data.patentResidents}
+      }
+      else if(action.data.category === "patentNonResidents"){
+        return {...state, patentNonResidents: action.data.patentNonResidents}
+      }
+    case UPDATE_COUNTRIES:
+      console.log("Update countries", action.countries)
+      return {...state, countries: action.countries}
     default:
       return state
   }

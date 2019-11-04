@@ -2,10 +2,9 @@ import React from 'react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { DataTable } from './dataTable';
 import {connect} from 'react-redux'
-import {getPopulation, getGDP, getEmissions, getLifeExpectancy, getTechExports, getPatents} from '../store/dataStore'
+import {getCountries, getPopulation, getGDP, getEmissions, getLifeExpectancy, getTechExports, getPatents} from '../store/dataStore'
 import 'react-tabs/style/react-tabs.css';
 import Dropdown from 'react-dropdown'
-// import Select from 'react-select'
 import Select from 'react-virtualized-select'
 
 
@@ -24,6 +23,7 @@ class DataDisplay extends React.Component {
     this.setState({selectedCountry: e.value})
   }
   componentDidMount() {
+    this.props.getCountries()
     this.props.getPopulation()
     this.props.getGDP()
     this.props.getEmissions()
@@ -34,17 +34,16 @@ class DataDisplay extends React.Component {
   }
 
   render(){
-    let options = [];
-    let countries = Object.keys(this.props.population);
-    countries.forEach(country => {
-      options.push(country)
-    })
-    const defaultOption = options[0]
-    console.log("In render - Pop", this.props.population);
-    console.log("In order - GDP", this.props.GDP)
+    console.log("In Render, countries", this.props.countries)
     return (
       <div>
-        <Dropdown options={options} onChange={this.onSelectCountry} value={defaultOption} placeholder="Select a country" />
+        <select name="country" onChange={this.handleChange} value={this.state.country}>
+            { this.props.countries ? (
+                this.props.countries.map((country, idx) => {
+                    return <option value={country.code} key={idx}>{country.name} </option>
+                })
+            ) : (null)}
+        </select>
         <Tabs>
           <TabList>
             <Tab>Population</Tab>
@@ -90,6 +89,7 @@ class DataDisplay extends React.Component {
 
 const mapStateToProps = state => {
   return {
+    countries : state.data.countries,
     population: state.data.population,
     GDP: state.data.gdp,
     emissions: state.data.emissions,
@@ -102,6 +102,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
+  getCountries: () => dispatch(getCountries()),
   getPopulation: () => dispatch(getPopulation()),
   getGDP: () => dispatch(getGDP()),
   getEmissions:() => dispatch(getEmissions()),
