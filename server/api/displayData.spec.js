@@ -27,7 +27,6 @@ describe('Population routes', () => {
 
         it('GET responds with populations after data has been added', async () => {
             let country = await Country.create({name: "Ecuador", code: "ECU"})
-            // console.log("Country", country)
             let populationOne = await Population.create({
                 year: 2019,
                 total: 16000000,

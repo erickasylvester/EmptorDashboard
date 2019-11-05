@@ -53,13 +53,10 @@ export const getCountries = (data) => async dispatch => {
 }
 
 export const updateData = (data) => async dispatch => {
-  console.log("Updating data in store")
   try {
     switch(data.category){
       case POPULATION:
         {
-          console.log("In pop switch")
-
           const res = await axios.put('/api/display_data/population', data)
           let population = restructureData(res.data)
           dispatch(gotPopulation(population))        
@@ -97,7 +94,6 @@ export const getGDP = () => async dispatch => {
   try {
     const res = await axios.get('/api/display_data/gdp')
     let newData = res.data;
-    console.log("GDP", res.data)
     let gdp = {};
     for (let i = 0; i < newData.length; i++){
       if(!gdp[newData[i].country.code]){
@@ -166,7 +162,6 @@ export const getPatents = (resident) => async dispatch => {
   try {
     const res = await axios.get(`/api/display_data/patents/${resident}`)
     let newData = res.data;
-    console.log("Patents: ", newData)
     let patents = {};
     for (let i = 0; i < newData.length; i++){
       if(!patents[newData[i].country.code]){
@@ -225,7 +220,6 @@ export default function(state = initialState, action) {
         return {...state, patentNonResidents: action.data.patentNonResidents}
       }
     case UPDATE_COUNTRIES:
-      console.log("Update countries", action.countries)
       return {...state, countries: action.countries}
     default:
       return state

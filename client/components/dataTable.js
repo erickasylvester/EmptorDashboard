@@ -15,7 +15,7 @@ export const DataTable = props => {
   if(data){
     totals.push(data);
     let headers = Object.keys(data);
-    headers.forEach((header, idx) => {
+    headers.forEach((header) => {
       columns.push({
         Header: header,
         accessor: header

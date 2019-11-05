@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import  {updateData} from '../store'
 import {connect} from 'react-redux'
 
+//default initial state
 const defaultState = {
     country: 'USA',
     category: 'population',
@@ -9,6 +10,7 @@ const defaultState = {
     total: 0
 }
 
+//Form to update information
 class ChangeForm extends Component {
     constructor(props){
         super(props);
@@ -26,7 +28,6 @@ class ChangeForm extends Component {
 
     async handleSubmit(event){
         event.preventDefault();
-        console.log("On submit: ", this.state)
 
         const newRecord = await this.props.updateData({
             country: this.state.country,

@@ -35,7 +35,6 @@ async function loadFile(category, file){
                         if(!country){
                             country = await Country.create({name: row[0],
                                 code: row[1]})
-                            console.log("Created country", country.name)
 
                         }
                         countryCache[row[1]] = country.id;

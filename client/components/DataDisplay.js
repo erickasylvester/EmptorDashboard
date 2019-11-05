@@ -4,8 +4,6 @@ import { DataTable } from './dataTable';
 import {connect} from 'react-redux'
 import {getCountries, getPopulation, getGDP, getEmissions, getLifeExpectancy, getTechExports, getPatents} from '../store/dataStore'
 import 'react-tabs/style/react-tabs.css';
-import Dropdown from 'react-dropdown'
-import Select from 'react-virtualized-select'
 
 
 /**
@@ -34,7 +32,6 @@ class DataDisplay extends React.Component {
   }
 
   render(){
-    console.log("In Render, countries", this.props.countries)
     return (
       <div>
         <select name="country" onChange={this.handleChange} value={this.state.country}>
