@@ -29,9 +29,20 @@ async function loadFile(category, file){
         .on('data', async (row) => {
             if(countriesOfInterest.includes(row[1])){
                 if(!countryCache[row[1]]){
-                    let country = await Country.create({name: row[0],
-                                                        code: row[1]})
-                    countryCache[row[1]] = country.id;
+                    try{
+                        let country = await Country.findOne({where:{name: row[0],
+                                                            code: row[1]}})
+                        if(!country){
+                            country = await Country.create({name: row[0],
+                                code: row[1]})
+                            console.log("Created country", country.name)
+
+                        }
+                        countryCache[row[1]] = country.id;
+                    }
+                    catch(e){
+                        console.log("Error creating country", e)
+                    }
                 }
                 if(category === POPULATION){
                     await loadPopulations(countryCache[row[1]], row);
@@ -67,54 +78,85 @@ async function loadPopulations(countryId, data){
     //loop through all rows that contain population per year
     for(let i = 4; i < 63; i++){
         let year = INITIAL_DATA_YEAR + i;
-        await Population.create({year: year,
-                        total: data[i],
-                        countryId: countryId})
+        try{
+            await Population.create({year: year,
+                            total: data[i],
+                            countryId: countryId})
+        }
+        catch(e){
+            console.log("Error creating population", e)
+        }
     }
 }
 
 async function loadGDP(countryId, data){
+    console.log("Loading GPD", countryId)
     for(let i = 4; i < 63; i++){
         let year = INITIAL_DATA_YEAR + i;
-        await GDP.create({year: year,
+        try{
+            await GDP.create({year: year,
                         total: data[i],
                         countryId: countryId})
+        }
+        catch(e){
+            console.log("Error creating GDP", e)
+        }
     }
 }
 async function loadEmission(countryId, data){
     for(let i = 4; i < 63; i++){
         let year = INITIAL_DATA_YEAR + i;
-        await Emission.create({year: year,
+        try{
+            await Emission.create({year: year,
                         total: data[i],
                         countryId: countryId})
+        }
+        catch(e){
+            console.log("Error creating emissions", e)
+        }
     }
 }
 
 async function loadLifeExpentancy(countryId, data){
     for(let i = 4; i < 63; i++){
         let year = INITIAL_DATA_YEAR + i;
-        await LifeExpectancy.create({year: year,
+        try{
+            await LifeExpectancy.create({year: year,
                         total: data[i],
                         countryId: countryId})
+        }
+        catch(e){
+            console.log("Error creating life expectancy", e)
+        }
     }
 }
 
 async function loadTechExport(countryId, data){
     for(let i = 4; i < 63; i++){
         let year = INITIAL_DATA_YEAR + i;
-        await TechExports.create({year: year,
+        try{
+            await TechExports.create({year: year,
                         total: data[i],
                         countryId: countryId})
+        }
+        catch(e){
+            console.log("Error creating tech exports", e)
+        }
     }
 }
 
 async function loadPatents(resident, countryId, data ){
     for(let i = 4; i < 63; i++){
         let year = INITIAL_DATA_YEAR + i;
-        await Patent.create({year: year,
+        try{
+            await Patent.create({year: year,
                         total: data[i],
                         resident: resident,
                         countryId: countryId})
+        }
+        catch(e){
+            console.log("Error creating patent", e)
+        }
     }
 }
 
